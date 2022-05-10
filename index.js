@@ -1,7 +1,16 @@
-const express = require('express');
-const app = express();
-const port = 3000;
+const express = require('express')
+const serveStatic = require('serve-static')
+const path = require('path')
 
-app.get('/', (req, res) => res.send('Hello World!'));
 
-app.listen(process.env.PORT || port, () => console.log(`Example app listening at http://localhost:${port}`));
+
+const app = express()
+
+
+
+app.use('/',serveStatic(path.join(__dirname,'/dist')))
+
+
+const port = process.env.PORT || 8080
+
+app.listen(port)
