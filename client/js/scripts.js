@@ -5,3 +5,12 @@
 */
 // This file is intentionally blank
 // Use this file to add JavaScript to your project
+
+console.log("js/script.js running..")
+console.log("beyaz-horoz-simsar console (-_-)")
+
+var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+    keyboard: true
+  })
+
+  

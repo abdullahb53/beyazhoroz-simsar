@@ -1,4 +1,5 @@
  body{
+     
             margin: 0;
             padding: 0;
         }
@@ -7,14 +8,12 @@
             /* width: 72.81%;
             height: 356.93px; */
             width: 100%;
-            height: 650px;
+            height: 720px;
         }
 
         #app{
-            padding-top:12.944px;
-            padding-bottom:12.944px;
-            /* padding-bottom: 14.562px; */
-            text-align: left;
-            color:#8698a8;
+          
             
         }
+
+        

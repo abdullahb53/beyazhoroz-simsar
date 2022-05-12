@@ -12,6 +12,10 @@
         <link href="css/styles.css" rel="stylesheet" />
         <link rel="stylesheet" href="leaflet/dist/leaflet.css" />
         <link rel="stylesheet" href="css/main.css" />
+        <!-- Bootstrap core JS-->
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+        <!-- Core theme JS-->
+        <script src="js/scripts.js"></script> 
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
     </head>
@@ -20,12 +24,15 @@
         <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-bottom">
             <div class="container px-4 px-lg-5">
                 <a class="navbar-brand" href="#!">beyazhoroz</a>
+                
+
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
-
                         <li class="nav-item"><a class="nav-link" href="#!">Hakkında</a></li>
                         <li class="nav-item"><a class="nav-link" href="#!">İletişim</a></li>
+                        
+                        
                     </ul>
                 </div>
             </div>
@@ -39,23 +46,28 @@
                 <div class="row gx-4 gx-lg-5">
                     <div class="col-lg-6">
                         <div id="app">
-                        <h1 >{beyazhoroz}.Simsar</h1>
-                        {{ message }}
-                        
+                       
                     </div>
                     
                     </div>
                 </div>
             </div>
             
+       
         </section>
+
+  
+  
         <div id="map" class="map"></div>
-        <!-- Bootstrap core JS-->
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
-        <!-- Core theme JS-->
-        <script src="js/scripts.js"></script>
+
+        
+
+
+
+
+      
     </body>
-</html>
+</html>            
 
 <script src="leaflet/dist/leaflet.js"></script>
 <script>
@@ -83,7 +95,7 @@ async function created() {
     for (var i =0;i<data.data.data.length;i++){
         var popupContent = "'"+data.data.data[i].information + "'" + "<br>İsim: " + data.data.data[i].name + "<br>Tel:" + data.data.data[i].phone;
         L.marker([data.data.data[i].enlem,data.data.data[i].boylam]).addTo(map).bindPopup(popupContent);
-        L.popup
+        // L.popup
 
     }
 }
@@ -98,9 +110,99 @@ var map = L.map('map').setView([ 38.734802,35.467987], 7);
 var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
 	subdomains: 'abcd',
+    opacity: 1,
+    zIndex: -9999,
 	maxZoom: 20
 });
-CartoDB_DarkMatter.addTo(map)
+CartoDB_DarkMatter.addTo(map);
+
+var theMarker = {};
+
+  map.on('click',function(e){
+    lat = e.latlng.lat;
+    lon = e.latlng.lng;
+
+    console.log("You clicked the map at LAT: "+ lat+" and LONG: "+lon );
+        //Clear existing marker, 
+
+        if (theMarker != undefined) {
+              map.removeLayer(theMarker);
+        };
+
+    //Add a marker to show where you clicked.
+    var poupForm = `
+    <style>
+        body {
+          font-family: Arial;
+        }
+        
+        input[type=text], select {
+          width: 100%;
+          padding: 12px 20px;
+          margin: 8px 0;
+          display: block;
+          border: 1px solid #ccc;
+          border-radius: 4px;
+          box-sizing: border-box;
+        }
+        
+        input[type=submit] {
+          width: 100%;
+          background-color: #04AA6D;
+          color: white;
+          padding: 14px 20px;
+          margin: 8px 0;
+          border: none;
+          border-radius: 4px;
+          cursor: pointer;
+        }
+        
+        input[type=submit]:hover {
+          background-color: #45a049;
+        }
+        
+        div.container2 {
+            width: 200px;
+          border-radius: 5px;
+          background-color: #f2f2f2;
+          padding: 10px;
+        }
+        </style>
+        <body>
+        
+        <div class="container2">
+          <form action="https://beyazhoroz.com/api/CREATELOCATION" method="post">
+            <input type="text" id="name" name="name" placeholder="Ad..">
+        
+            <input type="text" id="phone" name="phone" placeholder="Telefon.. (0534..)">
+        
+            <select id="type" name="type">
+              <option value="ciftci">Ciftci</option>
+              <option value="alici">Alici</option>
+              <option value="satici">Satici</option>
+            </select>
+
+            <textarea class="form-control" rows="2" cols = "24" id="information" name="information" placeholder="Aciklama.."></textarea>
+            
+            <input type="hidden" id="enlem" name="enlem" value="`+lat+ `">
+            <input type="hidden" id="boylam" name="boylam" value="`+lon+`">
+            <input type="hidden" id="initdate" name="initdate" value="none">
+
+
+          
+            <input type="submit" value="Gönder">
+          </form>
+        </div>
+
+
+    `;
+     theMarker = L.marker([lat,lon]).addTo(map).bindPopup(poupForm);
+
+     
+});
+
+
 
 </script>
+
 
