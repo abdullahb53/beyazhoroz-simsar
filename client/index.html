@@ -120,7 +120,7 @@ var theMarker = {};
 
 
 async function postLocationForm(){
-  alert(document.getElementById("enlem").value);
+  
   const requestOptions = {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -138,6 +138,12 @@ async function postLocationForm(){
     const response = await fetch("https://beyazhoroz.herokuapp.com/api/CREATELOCATION", requestOptions);
     const data = await response.json();
     this.postId = data.id;
+
+    
+    document.getElementById("button1").value = "BAŞARILI..";
+    document.getElementById("button1").disabled = true;
+    
+    
 }
 
   map.on('click',function(e){
@@ -168,7 +174,7 @@ async function postLocationForm(){
           box-sizing: border-box;
         }
         
-        input[type=submit] {
+        input[type=button] {
           width: 100%;
           background-color: #04AA6D;
           color: white;
@@ -179,8 +185,14 @@ async function postLocationForm(){
           cursor: pointer;
         }
         
-        input[type=submit]:hover {
+        input[type=button]:hover {
           background-color: #45a049;
+        }
+
+        input[type=button]:disabled{
+          border: 1px solid #999999;
+          background-color: #cccccc;
+          color: #666666;
         }
         
         div.container2 {
@@ -212,7 +224,7 @@ async function postLocationForm(){
 
 
           
-            <input type="button" value="Gönder" onclick="postLocationForm()">
+            <input type="button" id="button1" value="Gönder" onclick="postLocationForm()">
           </form>
         </div>
 
