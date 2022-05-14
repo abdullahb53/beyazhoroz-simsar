@@ -18,6 +18,7 @@
         <script src="js/scripts.js"></script> 
         <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
 
+
     </head>
     <body>
         <!-- Navigation-->
@@ -55,17 +56,8 @@
             
        
         </section>
-
   
-  
-        <div id="map" class="map"></div>
-
-        
-
-
-
-
-      
+        <div id="map" class="map"></div> 
     </body>
 </html>            
 
@@ -79,7 +71,19 @@ var app = new Vue({
 })
 
 var public_data;
+
+//Map initialization
+var map = L.map('map').setView([ 38.734802,35.467987], 6);
+var allMarkers = L.layerGroup().addTo(map);
+
+
+
+
 async function created() {
+
+  //eger apide marker eklenme kismi duzenlenirse bu kod kalkar. cunku yeni markerin objectId sine gore marker eklenecektir...
+  allMarkers.clearLayers();
+
   // POST request using fetch with async/await
   const requestOptions = {
     method: "GET",
@@ -94,7 +98,7 @@ async function created() {
 
     for (var i =0;i<data.data.data.length;i++){
         var popupContent = "'"+data.data.data[i].information + "'" + "<br>İsim: " + data.data.data[i].name + "<br>Tel:" + data.data.data[i].phone+ "<br>Tür:" + data.data.data[i].type;
-        L.marker([data.data.data[i].enlem,data.data.data[i].boylam]).addTo(map).bindPopup(popupContent);
+        L.marker([data.data.data[i].enlem,data.data.data[i].boylam]).addTo(allMarkers).bindPopup(popupContent);
         // L.popup
 
     }
@@ -103,23 +107,25 @@ async function created() {
 created();
 
 
-//Map initialization
-var map = L.map('map').setView([ 38.734802,35.467987], 7);
 
-//OSM-layer
-var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
-	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
-	subdomains: 'abcd',
+
+
+var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+// });
+// //OSM-layer
+// var CartoDB_DarkMatter = L.tileLayer('https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png', {
+// 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
     opacity: 1,
     zIndex: -9999,
 	maxZoom: 20
 });
-CartoDB_DarkMatter.addTo(map);
+OpenStreetMap_Mapnik.addTo(map);
 
 var theMarker = {};
 
 
-async function postLocationForm(){
+async function postLocationForm(lat,lon){
   
   const requestOptions = {
     method: "POST",
@@ -134,21 +140,52 @@ async function postLocationForm(){
       initdate : document.getElementById("initdate").value, 
     }) 
   
-  };
+  }
     const response = await fetch("https://beyazhoroz.herokuapp.com/api/CREATELOCATION", requestOptions);
     const data = await response.json();
     this.postId = data.id;
 
+    if(data.status == 201){
+      document.getElementById("button1").value = "BAŞARILI..";
+      document.getElementById("button1").disabled = true;
+      //marker eklenmiş halini  getirmek için refresh yerine yeniden istekleri doldurduk.
+      created();
+
+      //map.panTo(new L.LatLng(lat, lon));
+      
+      setTimeout(() => {
+        map.removeLayer(theMarker);
+      }, 700);
+      
+
+    }else{
+      document.getElementById("button1").value = "HATA*TEKRAR DENE";
+
+    }
     
-    document.getElementById("button1").value = "BAŞARILI..";
-    document.getElementById("button1").disabled = true;
+    
+    
+    // map.panTo(new L.LatLng(lat, lon));
     
     
 }
 
+
+
+var greenIcon = new L.Icon({
+  iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+  shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41]
+});
+
   map.on('click',function(e){
     lat = e.latlng.lat;
     lon = e.latlng.lng;
+
+    
 
     console.log("You clicked the map at LAT: "+ lat+" and LONG: "+lon );
         //Clear existing marker, 
@@ -224,14 +261,21 @@ async function postLocationForm(){
 
 
           
-            <input type="button" id="button1" value="Gönder" onclick="postLocationForm()">
+            <input type="button" id="button1" value="Gönder" onclick="postLocationForm(`+lat+`,`+lon+`)">
           </form>
         </div>
 
 
     `;
-     theMarker = L.marker([lat,lon]).addTo(map).bindPopup(poupForm);
+     theMarker = L.marker([lat,lon],{icon: greenIcon}).addTo(map).bindPopup(poupForm);
+     //marker'i manuel clickledik..
+     theMarker.fire('click');
 
+          
+     //markerin popup'i kapanirsa marker silinir..
+     theMarker.getPopup().on('remove', function() {
+      map.removeLayer(theMarker)
+      });
      
 });
 

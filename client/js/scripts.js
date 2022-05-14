@@ -9,8 +9,8 @@
 console.log("js/script.js running..")
 console.log("beyaz-horoz-simsar console (-_-)")
 
-var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
-    keyboard: true
-  })
+// var myModal = new bootstrap.Modal(document.getElementById('myModal'), {
+//     keyboard: true
+//   })
 
   
