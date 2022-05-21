@@ -31,8 +31,8 @@
                 <div class="collapse navbar-collapse" id="navbarResponsive">
                     <ul class="navbar-nav ml-auto">
                       <li class="nav-item"><a class="nav-link" href="https://beyazhoroz.herokuapp.com">{beyaz-horoz}</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">Hakkında</a></li>
-                        <li class="nav-item"><a class="nav-link" href="#!">İletişim</a></li>
+                        <!-- <li class="nav-item"><a class="nav-link" href="#!">Hakkında</a></li>
+                        <li class="nav-item"><a class="nav-link" href="#!">İletişim</a></li> -->
                         
                         
                     </ul>
@@ -77,12 +77,9 @@ var public_data;
 var map = L.map('map').setView([ 38.734802,35.467987], 6);
 var allMarkers = L.layerGroup().addTo(map);
 
-
-
-
 async function created() {
 
-  //eger apide marker eklenme kismi duzenlenirse bu kod kalkar. cunku yeni markerin objectId sine gore marker eklenecektir...
+  //eger apide marker eklenme kismi duzenlenirse bu kod değişecek. cunku yeni markerin objectId sine gore marker eklenecektir...
   allMarkers.clearLayers();
 
   // POST request using fetch with async/await
@@ -106,10 +103,6 @@ async function created() {
 }
 
 created();
-
-
-
-
 
 var OpenStreetMap_Mapnik = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
 	attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -153,7 +146,6 @@ async function postLocationForm(lat,lon){
       created();
 
       //map.panTo(new L.LatLng(lat, lon));
-      
       setTimeout(() => {
         map.removeLayer(theMarker);
       }, 700);
@@ -163,15 +155,7 @@ async function postLocationForm(lat,lon){
       document.getElementById("button1").value = "HATA*TEKRAR DENE";
 
     }
-    
-    
-    
-    // map.panTo(new L.LatLng(lat, lon));
-    
-    
 }
-
-
 
 var greenIcon = new L.Icon({
   iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
@@ -189,8 +173,7 @@ var greenIcon = new L.Icon({
     
 
     console.log("You clicked the map at LAT: "+ lat+" and LONG: "+lon );
-        //Clear existing marker, 
-
+        //Fazlalık Marker Silindi.
         if (theMarker != undefined) {
               map.removeLayer(theMarker);
         };
@@ -279,8 +262,6 @@ var greenIcon = new L.Icon({
       });
      
 });
-
-
 
 </script>
 
